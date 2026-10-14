@@ -466,7 +466,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             ],
             unpack_depth=1,
         )
-        .partial(var="Patrol Chart", **(params.get("set_chart_title") or {}))
+        .partial(var="Patrol Trend", **(params.get("set_chart_title") or {}))
         .call()
     )
 
