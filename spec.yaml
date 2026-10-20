@@ -5,7 +5,7 @@ metadata:
   description: >-
     Track how your patrol effort and patrol results change over time by
     turning EarthRanger patrols and the events reported during them into a
-    single interactive bar or line chart of the metrics you choose (patrol
+    single interactive bar or line plot of the metrics you choose (patrol
     count, patrol days, distance, duration, event counts, encounter rates,
     area covered), summarized by week, month, or any other time interval and
     optionally split into one series per category, spatial region, or time
@@ -19,9 +19,9 @@ metadata:
       role: reviewer
   outputs:
     - name: Patrol Effort Plot
-      type: chart
+      type: plot
       description: >-
-        An interactive bar or line chart with one point per time interval
+        An interactive bar or line plot with one point per time interval
         and one series per selected metric, or one series per category
         value, spatial region, or time period when a breakdown is chosen.
       indicators:
@@ -41,7 +41,7 @@ metadata:
   repository: https://github.com/wildlife-dynamics/patrol-effort-plot
   documentation: https://github.com/wildlife-dynamics/patrol-effort-plot#readme
   readme: README.md
-  keywords: [patrol, effort, chart, earthranger]
+  keywords: [patrol, effort, plot, earthranger]
   thumbnail: resources/thumbnail.png
 
 requirements:
