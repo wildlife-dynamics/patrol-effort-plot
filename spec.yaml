@@ -18,7 +18,7 @@ metadata:
       email: alexm@earthranger.com
       role: reviewer
   outputs:
-    - name: Trend Chart
+    - name: Patrol Effort Plot
       type: chart
       description: >-
         An interactive bar or line chart with one point per time interval
