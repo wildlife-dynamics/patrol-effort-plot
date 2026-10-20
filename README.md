@@ -1,4 +1,4 @@
-# Patrol Trend Plot Workflow
+# Patrol Effort Plot Workflow
 
 ## Introduction
 
@@ -37,7 +37,7 @@ Before using this workflow, you need:
 
 1. Select "Workflow Templates" tab
 2. Click "+ Add Template"
-3. Copy and paste this URL https://github.com/wildlife-dynamics/patrol-trend-plot and wait for the workflow template to be downloaded and initialized
+3. Copy and paste this URL https://github.com/wildlife-dynamics/patrol-effort-plot and wait for the workflow template to be downloaded and initialized
 4. The template will now appear in your available template list
 
 ## Configuration Guide
@@ -48,7 +48,7 @@ Before using this workflow, you need:
 Give your workflow run a recognizable identity.
 
 - **Name** (required): A name for this analysis
-  - Example: `Patrol Trend Plot`
+  - Example: `Patrol Effort Plot`
 - **Description** (optional): A short note on what this run covers
   - Example: `Patrol metric trends over time as a bar chart.`
 
@@ -160,7 +160,7 @@ After the workflow completes successfully, open the run to view its dashboard.
 
 The workflow creates an interactive dashboard with one main visualization:
 
-#### Patrol Trend Plot
+#### Patrol Effort Plot
 - **Format**: Interactive bar or line chart (per your Styling choices)
 - **Features**:
   - X-axis: Time, bucketed by your chosen Time Interval (or "Week 1..N" within each period when comparing by Time)

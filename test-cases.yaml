@@ -1,4 +1,4 @@
-# Test cases for patrol-trend-plot. Each description states exactly what the
+# Test cases for patrol-effort-plot. Each description states exactly what the
 # case tests; every user-facing option appears in at least one case:
 #   chart types bar (base) / line (line-chart, time-mode); barmodes group
 #   (base, event-sum-fields, month-grouper) / stack (category-mode); palettes
@@ -27,7 +27,7 @@ base:
   mock_io: true
   params:
     workflow_details:
-      name: "Patrol Trend Plot"
+      name: "Patrol Effort Plot"
       description: "Patrol metric trends over time as a bar chart."
     er_client_name:
       data_source:
@@ -74,7 +74,7 @@ event-sum-fields:
     ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/event-display-names-number-of-animals.parquet
   params:
     workflow_details:
-      name: "Patrol Trend Plot"
+      name: "Patrol Effort Plot"
       description: "Patrol metric trends over time as a bar chart."
     er_client_name:
       data_source:
@@ -114,7 +114,7 @@ category-mode:
   mock_io: true
   params:
     workflow_details:
-      name: "Patrol Trend Plot"
+      name: "Patrol Effort Plot"
       description: "Patrol metric trends over time as a bar chart."
     er_client_name:
       data_source:
@@ -157,7 +157,7 @@ spatial-mode:
   mock_io: true
   params:
     workflow_details:
-      name: "Patrol Trend Plot"
+      name: "Patrol Effort Plot"
       description: "Patrol metric trends over time as a bar chart."
     er_client_name:
       data_source:
@@ -194,7 +194,7 @@ month-grouper:
   mock_io: true
   params:
     workflow_details:
-      name: "Patrol Trend Plot"
+      name: "Patrol Effort Plot"
       description: "Patrol metric trends over time as a bar chart."
     er_client_name:
       data_source:
@@ -232,7 +232,7 @@ line-chart:
   mock_io: true
   params:
     workflow_details:
-      name: "Patrol Trend Plot"
+      name: "Patrol Effort Plot"
       description: "Patrol metric trends over time as a line chart."
     er_client_name:
       data_source:
@@ -277,7 +277,7 @@ time-mode:
   mock_io: true
   params:
     workflow_details:
-      name: "Patrol Trend Plot"
+      name: "Patrol Effort Plot"
       description: "Patrol metric trends over time as a bar chart."
     er_client_name:
       data_source:

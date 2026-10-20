@@ -1,4 +1,48 @@
-id: patrol_trend_plot
+id: patrol_effort_plot
+
+metadata:
+  name: Patrol Effort Plot Workflow
+  description: >-
+    Track how your patrol effort and patrol results change over time by
+    turning EarthRanger patrols and the events reported during them into a
+    single interactive bar or line plot of the metrics you choose (patrol
+    count, patrol days, distance, duration, event counts, encounter rates,
+    area covered), summarized by week, month, or any other time interval and
+    optionally split into one series per category, spatial region, or time
+    period.
+  maintainers:
+    - name: Yun Wu
+      email: yun@wildlifedynamics.com
+      role: owner
+    - name: Alex Morling
+      email: alexm@earthranger.com
+      role: reviewer
+  outputs:
+    - name: Patrol Effort Plot
+      type: plot
+      description: >-
+        An interactive bar or line plot with one point per time interval
+        and one series per selected metric, or one series per category
+        value, spatial region, or time period when a breakdown is chosen.
+      indicators:
+        - name: Patrol Count
+        - name: Patrol Days
+        - name: Total Distance
+        - name: Total Duration
+        - name: Total Events
+        - name: Total Encounters
+        - name: Encounters per Distance
+        - name: Encounters per Duration
+        - name: Encounters per Patrol
+        - name: Encounters per Patrol Day
+        - name: Area Covered (Merged)
+        - name: Area Covered (Unmerged)
+  license: BSD-3-Clause
+  repository: https://github.com/wildlife-dynamics/patrol-effort-plot
+  documentation: https://github.com/wildlife-dynamics/patrol-effort-plot#readme
+  readme: README.md
+  keywords: [patrol, effort, plot, earthranger]
+  thumbnail: resources/thumbnail.png
 
 requirements:
   # >=2.18.4: first release with the chart task family (draw_chart with the
@@ -356,7 +400,7 @@ workflow:
     id: set_chart_title
     task: set_string_var
     partial:
-      var: "Patrol Trend"
+      var: "Patrol Effort"
 
   # ---------- Trend Chart config (user-facing card) ----------
   # One merged config task = the whole card. Field order comes from the task
