@@ -1,4 +1,4 @@
-id: patrol_trend_plot
+id: patrol_effort_plot
 
 requirements:
   # >=2.18.4: first release with the chart task family (draw_chart with the
@@ -356,7 +356,7 @@ workflow:
     id: set_chart_title
     task: set_string_var
     partial:
-      var: "Patrol Trend"
+      var: "Patrol Effort"
 
   # ---------- Trend Chart config (user-facing card) ----------
   # One merged config task = the whole card. Field order comes from the task
