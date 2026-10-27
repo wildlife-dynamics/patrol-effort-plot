@@ -8,9 +8,18 @@
 #   (event-sum-fields); bar value labels on (base, defaults) / off
 #   (category-mode); line shape/style/markers styled (line-chart) / defaults
 #   (time-mode); y-axis title set (line-chart) / empty (all others).
-# All cases are mock-io (canned ER fixtures; er_asia/demo_patrol matches the
-# canned patrol data, SpatialGrouperTest the canned spatial feature group).
-# The `live` case (mep_dev, mock_io: false) is added in Phase 3 / publish.
+# The seven original cases are mock-io on the canned ER fixtures (er_asia /
+# demo_patrol matches the canned patrol data, SpatialGrouperTest the canned
+# spatial feature group) plus the FLAG-OFF leg fixtures (dev/fixtures/flag-off:
+# the library's legs over the canned 2015 patrols, no team / member / asset
+# keys), so every one exercises the no-`patrol_schemas` path; their params are
+# unchanged from before the leg chain and their traces must stay identical
+# (dev/compare_before_after.py against a pre-change snapshot).
+# The legs-* cases run on the synthetic leg fixtures (dev/fixtures/legs, built
+# by dev/fixtures/build_leg_fixtures.py: 2 patrols / 3 legs on 2026-01-05..06,
+# 2 members + 1 asset per leg, 6 planted events, LegTestRegions West/East).
+# The flag-off-* cases prove the leg presets and roster categories on a site
+# without the flag; `empty` the zero-row path; `mep_dev_legs` is live.
 #
 # Invalid combinations (multi-metric breakdowns, interval not finer than the
 # Time comparison period) are covered by ecoscope unit tests — a workflow
@@ -25,6 +34,11 @@ base:
     "done" — expect weekly chronological bars and a visible legend even
     with a single series.
   mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
   params:
     workflow_details:
       name: "Patrol Effort Plot"
@@ -72,6 +86,10 @@ event-sum-fields:
   mock_io: true
   mock_io_overrides:
     ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/event-display-names-number-of-animals.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
   params:
     workflow_details:
       name: "Patrol Effort Plot"
@@ -112,6 +130,11 @@ category-mode:
     over the data-dependent series count. Single metric row — the
     breakdown constraint.
   mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
   params:
     workflow_details:
       name: "Patrol Effort Plot"
@@ -155,6 +178,11 @@ spatial-mode:
     second spatial-index pass on both branches, and one series per region
     from a single metric.
   mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
   params:
     workflow_details:
       name: "Patrol Effort Plot"
@@ -192,6 +220,11 @@ month-grouper:
     encounters_per_patrol_day with its column-less "Events per Patrol Day"
     rate label); and multi-series grouped bars on a week axis.
   mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
   params:
     workflow_details:
       name: "Patrol Effort Plot"
@@ -230,6 +263,11 @@ line-chart:
     title on the layout, plus the Custom Colors palette branch — the hex
     list cycled over the series.
   mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
   params:
     workflow_details:
       name: "Patrol Effort Plot"
@@ -275,6 +313,11 @@ time-mode:
     relative to each period's start on the integer "Week 1..N" axis so the
     week indices align across months.
   mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
   params:
     workflow_details:
       name: "Patrol Effort Plot"
@@ -305,3 +348,447 @@ time-mode:
     trend_style:
       chart:
         chart_type: "line"
+
+legs-metrics:
+  name: Leg metrics on a day axis
+  description: >-
+    Tests the four leg presets as chart metrics on a day axis over the
+    synthetic leg fixture (flag ON): Jan 5 -> Active Duration 7 h, Elapsed
+    Duration 8 h, Leg Count 2, Member-days 4; Jan 6 -> 2 h, 2 h, 1, 2. Leg
+    rows bucket on segment_start; the three leg measure columns are NaN on
+    track and event rows so the sums see legs only.
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrols_from_combined_params: dev/fixtures/legs/patrols.parquet
+    ecoscope.platform.tasks.io.get_patrol_observations_from_patrols_df_and_combined_params: dev/fixtures/legs/observations.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/legs/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/legs/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/legs/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/legs/legs-type-display-names.parquet
+    ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/legs/event-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: []
+    trend_config:
+      metrics:
+        - {metric: "active_duration", unit: "h"}
+        - {metric: "elapsed_duration", unit: "h"}
+        - {metric: "leg_count"}
+        - {metric: "member_days"}
+      time_interval: "day"
+      mode:
+        mode: "metrics"
+
+legs-category-member:
+  name: By Category (member)
+  description: >-
+    Tests Member as the Compares category: patrol_member_names (a list
+    column copied from the legs onto tracks and events) is exploded by the
+    breakdown-category splitter before split_groups, giving two series
+    (Ranger Amani, Ranger Baraka) that each carry the FULL Active Duration
+    (7 h on Jan 5, 2 h on Jan 6 - full credit per member).
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrols_from_combined_params: dev/fixtures/legs/patrols.parquet
+    ecoscope.platform.tasks.io.get_patrol_observations_from_patrols_df_and_combined_params: dev/fixtures/legs/observations.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/legs/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/legs/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/legs/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/legs/legs-type-display-names.parquet
+    ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/legs/event-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: []
+    trend_config:
+      metrics:
+        - {metric: "active_duration", unit: "h"}
+      time_interval: "day"
+      mode:
+        mode: "category"
+        category: "patrol_member_names"
+
+legs-grouper-team:
+  name: Team grouper
+  description: >-
+    Tests Team as a Group Data grouper: one dashboard view "Leg Test Team"
+    (the team name resolved on the legs and copied onto the tracks), with
+    Patrol Count (tracks: 1 patrol per day) unchanged beside Active
+    Duration (legs: 7 h and 2 h).
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrols_from_combined_params: dev/fixtures/legs/patrols.parquet
+    ecoscope.platform.tasks.io.get_patrol_observations_from_patrols_df_and_combined_params: dev/fixtures/legs/observations.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/legs/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/legs/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/legs/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/legs/legs-type-display-names.parquet
+    ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/legs/event-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: [{index_name: "patrol_team_name"}]
+    trend_config:
+      metrics:
+        - {metric: "patrol_count"}
+        - {metric: "active_duration", unit: "h"}
+      time_interval: "day"
+      mode:
+        mode: "metrics"
+
+legs-grouper-member:
+  name: Member grouper
+  description: >-
+    Tests Member as a Group Data grouper: the list column is exploded into
+    one view per member (Ranger Amani, Ranger Baraka); explode_for_groupers
+    divides leg_member_days per member row, so each view shows Member-days
+    2 (Jan 5) and 1 (Jan 6) beside Leg Count 2 and 1.
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrols_from_combined_params: dev/fixtures/legs/patrols.parquet
+    ecoscope.platform.tasks.io.get_patrol_observations_from_patrols_df_and_combined_params: dev/fixtures/legs/observations.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/legs/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/legs/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/legs/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/legs/legs-type-display-names.parquet
+    ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/legs/event-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: [{index_name: "patrol_member_names"}]
+    trend_config:
+      metrics:
+        - {metric: "member_days"}
+        - {metric: "leg_count"}
+      time_interval: "day"
+      mode:
+        mode: "metrics"
+
+legs-spatial-mode:
+  name: By Spatial Group (leg apportioning)
+  description: >-
+    Tests apportioning under the Compares spatial breakdown: every leg's
+    track crosses the LegTestRegions boundary, so each leg's Active
+    Duration is shared by track length between the two regions: West
+    5.92 h / East 1.08 h on Jan 5 and West 0.77 h / East 1.23 h on Jan 6
+    (each day sums to the full 7 h and 2 h).
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrols_from_combined_params: dev/fixtures/legs/patrols.parquet
+    ecoscope.platform.tasks.io.get_patrol_observations_from_patrols_df_and_combined_params: dev/fixtures/legs/observations.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/legs/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/legs/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/legs/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/legs/legs-type-display-names.parquet
+    ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/legs/event-display-names.parquet
+    ecoscope.platform.tasks.io.get_spatial_features_group: dev/fixtures/legs/spatial-features.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: []
+    trend_config:
+      metrics:
+        - {metric: "active_duration", unit: "h"}
+      time_interval: "day"
+      mode:
+        mode: "spatial"
+        spatial_feature_group: "LegTestRegions"
+
+legs-events:
+  name: Planted events on the leg fixture
+  description: >-
+    Tests the events planted in the leg fixture's nested patrol_segments
+    (unpacked for real in mock mode): Total Events split by Event Type
+    (display names from the legs event-display-names fixture): Wildlife
+    Sighting 3 + 1 and Poachers Camp 2 + 0 on Jan 5 / Jan 6 (6 in all).
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrols_from_combined_params: dev/fixtures/legs/patrols.parquet
+    ecoscope.platform.tasks.io.get_patrol_observations_from_patrols_df_and_combined_params: dev/fixtures/legs/observations.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/legs/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/legs/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/legs/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/legs/legs-type-display-names.parquet
+    ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/legs/event-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: []
+    trend_config:
+      metrics:
+        - {metric: "total_events"}
+      time_interval: "day"
+      mode:
+        mode: "category"
+        category: "event_type_display"
+
+flag-off-legs:
+  name: Leg presets on a flag-off site
+  description: >-
+    Tests the leg presets on the canned 2015 fixtures with the FLAG-OFF leg
+    frames: Patrol Count bars equal the pre-change base snapshot
+    ([5, 11, 10, 8, 9, 7, 4, 6, 6] over the weeks from 2014-12-29); Active
+    Duration and Leg Count draw from the two 2015 legs; Member-days (NaN
+    without member data) draws no bars and raises no error.
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2015-01-10T00:00:00"
+      until: "2015-02-28T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["demo_patrol"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: []
+    trend_config:
+      metrics:
+        - {metric: "patrol_count"}
+        - {metric: "active_duration", unit: "h"}
+        - {metric: "member_days"}
+      time_interval: "week"
+      mode:
+        mode: "metrics"
+
+flag-off-member:
+  name: Member category on a flag-off site
+  description: >-
+    Tests Member as the Compares category on a site without the
+    patrol_schemas flag: every row's patrol_member_names is "None", so the
+    chart has one "None" series (Member-days blank) and no task error.
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/flag-off/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/flag-off/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/flag-off/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/flag-off/legs-type-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2015-01-10T00:00:00"
+      until: "2015-02-28T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["demo_patrol"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: []
+    trend_config:
+      metrics:
+        - {metric: "member_days"}
+      time_interval: "week"
+      mode:
+        mode: "category"
+        category: "patrol_member_names"
+
+empty:
+  name: Empty fixtures
+  description: >-
+    Tests the zero-row path: empty patrols, observations, legs, name frames
+    and events (schema only) complete without a task error.
+  mock_io: true
+  mock_io_overrides:
+    ecoscope.platform.tasks.io.get_patrols_from_combined_params: dev/fixtures/empty/patrols.parquet
+    ecoscope.platform.tasks.io.get_patrol_observations_from_patrols_df_and_combined_params: dev/fixtures/empty/observations.parquet
+    ecoscope.platform.tasks.io.get_patrol_segments_from_patrols_df_and_combined_params: dev/fixtures/empty/legs.parquet
+    ecoscope.platform.tasks.io.add_patrol_team_names: dev/fixtures/empty/legs-team-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_roster_names: dev/fixtures/empty/legs-roster-names.parquet
+    ecoscope.platform.tasks.io.add_patrol_type_display_names: dev/fixtures/empty/legs-type-display-names.parquet
+    ecoscope.platform.tasks.io.get_event_type_display_names_from_events: dev/fixtures/empty/event-display-names.parquet
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "er_asia"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: []
+    trend_config:
+      metrics:
+        - {metric: "patrol_count"}
+        - {metric: "active_duration", unit: "h"}
+      time_interval: "day"
+      mode:
+        mode: "metrics"
+
+mep_dev_legs:
+  name: "Live: mep-dev leg test patrols"
+  description: >-
+    LIVE (mep_dev; needs ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__MEP_DEV__*):
+    the seeded ecoscope_leg_test patrols on 2026-01-05..06 on a day axis,
+    grouped by Team: one view "Ecoscope Leg Test Team" showing Active
+    Duration 7 h + 2 h, Elapsed Duration 8 h + 2 h, Leg Count 2 + 1,
+    Member-days 4 + 2; 0 events on the seeded patrols.
+  mock_io: false
+  params:
+    workflow_details:
+      name: "Patrol Effort Plot"
+      description: "Patrol metric trends over time as a bar chart."
+    er_client_name:
+      data_source:
+        name: "mep_dev"
+    time_range:
+      since: "2026-01-05T00:00:00"
+      until: "2026-01-07T23:59:59"
+      timezone:
+        label: "UTC (UTC+00:00)"
+        tzCode: "UTC"
+        name: "(UTC+00:00) UTC"
+        utc: "+00:00"
+    er_params:
+      patrol_types: ["ecoscope_leg_test"]
+      event_types: []
+      status: ["done"]
+    groupers:
+      groupers: [{index_name: "patrol_team_name"}]
+    trend_config:
+      metrics:
+        - {metric: "active_duration", unit: "h"}
+        - {metric: "elapsed_duration", unit: "h"}
+        - {metric: "leg_count"}
+        - {metric: "member_days"}
+      time_interval: "day"
+      mode:
+        mode: "metrics"
