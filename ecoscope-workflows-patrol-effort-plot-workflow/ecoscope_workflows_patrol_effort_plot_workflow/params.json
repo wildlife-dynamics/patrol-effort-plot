@@ -25,8 +25,8 @@
       "properties": {
         "data_source": {
           "$ref": "#/$defs/EarthRangerConnection",
-          "title": "",
-          "description": "Select one of your configured data sources."
+          "description": "Select one of your configured data sources.",
+          "title": ""
         }
       },
       "required": [
@@ -39,23 +39,19 @@
       "additionalProperties": false,
       "properties": {
         "since": {
+          "description": "The start time",
           "format": "date-time",
           "title": "Since",
-          "type": "string",
-          "description": "The start time"
+          "type": "string"
         },
         "until": {
+          "description": "The end time",
           "format": "date-time",
           "title": "Until",
-          "type": "string",
-          "description": "The end time"
+          "type": "string"
         },
         "timezone": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/TimezoneInfo"
-            }
-          ],
+          "$ref": "#/$defs/TimezoneInfo",
           "default": null,
           "title": "Timezone"
         }
@@ -72,39 +68,80 @@
       "additionalProperties": false,
       "properties": {
         "patrol_types": {
+          "description": "Specify the patrol type(s) to analyze (optional). Leave empty to analyze all patrol types.",
           "items": {
             "type": "string"
           },
           "title": "Patrol Types",
-          "type": "array",
-          "description": "Specify the patrol type(s) to analyze (optional). Leave empty to analyze all patrol types."
+          "type": "array"
         },
         "event_types": {
+          "description": "Specify the event type(s) to analyze (optional). Leave this section empty to analyze all event types.",
           "items": {
             "type": "string"
           },
           "title": "Event Types",
-          "type": "array",
-          "description": "Specify the event type(s) to analyze (optional). Leave this section empty to analyze all event types."
+          "type": "array"
         },
         "status": {
           "default": [
             "done"
           ],
+          "description": "Choose to analyze patrols with a certain status. If left empty, patrols of all status will be analyzed",
+          "ecoscope:advanced": true,
           "items": {
-            "enum": [
-              "active",
-              "overdue",
-              "done",
-              "cancelled"
-            ],
-            "type": "string"
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "active",
+                "title": "Active"
+              },
+              {
+                "const": "overdue",
+                "title": "Overdue"
+              },
+              {
+                "const": "done",
+                "title": "Done"
+              },
+              {
+                "const": "cancelled",
+                "title": "Cancelled"
+              }
+            ]
           },
           "title": "Patrol Status",
           "type": "array",
-          "description": "Choose to analyze patrols with a certain status. If left empty, patrols of all status will be analyzed",
-          "uniqueItems": true,
-          "ecoscope:advanced": true
+          "uniqueItems": true
+        },
+        "event_states": {
+          "default": null,
+          "description": "Choose to analyze events with a certain state. If left empty, events of all states will be analyzed",
+          "ecoscope:advanced": true,
+          "items": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "new",
+                "title": "New"
+              },
+              {
+                "const": "active",
+                "title": "Active"
+              },
+              {
+                "const": "resolved",
+                "title": "Resolved"
+              },
+              {
+                "const": "review",
+                "title": "Review"
+              }
+            ]
+          },
+          "title": "Event State",
+          "type": "array",
+          "uniqueItems": true
         }
       },
       "required": [
@@ -118,20 +155,16 @@
       "additionalProperties": false,
       "properties": {
         "bounding_box": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/BoundingBox"
-            }
-          ],
+          "$ref": "#/$defs/BoundingBox",
           "default": {
             "min_y": -90.0,
             "max_y": 90.0,
             "min_x": -180.0,
             "max_x": 180.0
           },
-          "title": "Bounding Box",
           "description": "Only include observations/events inside this bounding box.",
-          "ecoscope:advanced": true
+          "ecoscope:advanced": true,
+          "title": "Bounding Box"
         },
         "filter_point_coords": {
           "default": [
@@ -148,20 +181,16 @@
               "x": 1.0
             }
           ],
+          "description": "Exclude observations/events at these exact coordinates.",
+          "ecoscope:advanced": true,
           "items": {
             "$ref": "#/$defs/Coordinate"
           },
           "title": "Filter Exact Point Coordinates",
-          "type": "array",
-          "description": "Exclude observations/events at these exact coordinates.",
-          "ecoscope:advanced": true
+          "type": "array"
         },
         "trajectory_segment_filter": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/TrajectorySegmentFilter"
-            }
-          ],
+          "$ref": "#/$defs/TrajectorySegmentFilter",
           "default": {
             "min_length_meters": 0.001,
             "max_length_meters": 100000,
@@ -170,9 +199,9 @@
             "min_speed_kmhr": 0.01,
             "max_speed_kmhr": 500
           },
-          "title": "Trajectory Filter",
           "description": "Drop trajectory segments outside these length/time/speed bounds.",
-          "ecoscope:advanced": true
+          "ecoscope:advanced": true,
+          "title": "Trajectory Filter"
         }
       },
       "type": "object",
@@ -184,6 +213,7 @@
       "properties": {
         "groupers": {
           "default": null,
+          "description": "            Specify how the data should be grouped to create the views for your dashboard.\n            This field is optional; if left blank, all the data will appear in a single view.\n            ",
           "items": {
             "anyOf": [
               {
@@ -199,8 +229,7 @@
             "title": "Group by"
           },
           "title": " ",
-          "type": "array",
-          "description": "            Specify how the data should be grouped to create the views for your dashboard.\n            This field is optional; if left blank, all the data will appear in a single view.\n            "
+          "type": "array"
         }
       },
       "type": "object",
@@ -216,16 +245,21 @@
               "metric": "patrol_count"
             }
           ],
+          "description": "Metrics drawn as one series each. Keep exactly ONE metric row when Compares is set to Category, Spatial Group or Time.",
           "items": {
             "discriminator": {
               "mapping": {
+                "active_duration": "#/$defs/ActiveDurationMetric",
                 "area_covered_merged": "#/$defs/MergedAreaCoveredMetric",
                 "area_covered_unmerged": "#/$defs/UnmergedAreaCoveredMetric",
                 "custom": "#/$defs/CustomMetric",
+                "elapsed_duration": "#/$defs/ElapsedDurationMetric",
                 "encounters_per_distance": "#/$defs/EncountersPerDistanceMetric",
                 "encounters_per_duration": "#/$defs/EncountersPerDurationMetric",
                 "encounters_per_patrol": "#/$defs/EncountersPerPatrolMetric",
                 "encounters_per_patrol_day": "#/$defs/EncountersPerPatrolDayMetric",
+                "leg_count": "#/$defs/LegCountMetric",
+                "member_days": "#/$defs/MemberDaysMetric",
                 "patrol_count": "#/$defs/PatrolCountMetric",
                 "patrol_days": "#/$defs/PatrolDaysMetric",
                 "total_distance": "#/$defs/TotalDistanceMetric",
@@ -237,6 +271,9 @@
             },
             "oneOf": [
               {
+                "$ref": "#/$defs/ActiveDurationMetric"
+              },
+              {
                 "$ref": "#/$defs/MergedAreaCoveredMetric"
               },
               {
@@ -244,6 +281,9 @@
               },
               {
                 "$ref": "#/$defs/CustomMetric"
+              },
+              {
+                "$ref": "#/$defs/ElapsedDurationMetric"
               },
               {
                 "$ref": "#/$defs/EncountersPerDistanceMetric"
@@ -256,6 +296,12 @@
               },
               {
                 "$ref": "#/$defs/EncountersPerPatrolDayMetric"
+              },
+              {
+                "$ref": "#/$defs/LegCountMetric"
+              },
+              {
+                "$ref": "#/$defs/MemberDaysMetric"
               },
               {
                 "$ref": "#/$defs/PatrolCountMetric"
@@ -278,13 +324,10 @@
             ]
           },
           "title": "Metrics",
-          "type": "array",
-          "description": "Metrics drawn as one series each. Keep exactly ONE metric row when Compares is set to Category, Spatial Group or Time."
+          "type": "array"
         },
         "time_interval": {
           "default": "week",
-          "title": "Time Interval",
-          "type": "string",
           "description": "Choose the time interval for the x-axis to control how metrics are summarized over time.",
           "oneOf": [
             {
@@ -307,38 +350,11 @@
               "const": "hour",
               "title": "Hour"
             }
-          ]
+          ],
+          "title": "Time Interval",
+          "type": "string"
         },
         "mode": {
-          "default": null,
-          "title": "",
-          "type": "object",
-          "properties": {
-            "mode": {
-              "type": "string",
-              "title": "Compares",
-              "default": "metrics",
-              "description": "What each series represents: one series per metric (Metrics Only), or the single metric split into one series per category value, spatial region, or time period.",
-              "oneOf": [
-                {
-                  "const": "metrics",
-                  "title": "Metrics Only"
-                },
-                {
-                  "const": "category",
-                  "title": "Category"
-                },
-                {
-                  "const": "spatial",
-                  "title": "Spatial Group"
-                },
-                {
-                  "const": "time",
-                  "title": "Time"
-                }
-              ]
-            }
-          },
           "allOf": [
             {
               "if": {
@@ -413,7 +429,36 @@
                 }
               }
             }
-          ]
+          ],
+          "default": null,
+          "properties": {
+            "mode": {
+              "type": "string",
+              "title": "Compares",
+              "default": "metrics",
+              "description": "What each series represents: one series per metric (Metrics Only), or the single metric split into one series per category value, spatial region, or time period.",
+              "oneOf": [
+                {
+                  "const": "metrics",
+                  "title": "Metrics Only"
+                },
+                {
+                  "const": "category",
+                  "title": "Category"
+                },
+                {
+                  "const": "spatial",
+                  "title": "Spatial Group"
+                },
+                {
+                  "const": "time",
+                  "title": "Time"
+                }
+              ]
+            }
+          },
+          "title": "",
+          "type": "object"
         }
       },
       "type": "object",
@@ -424,27 +469,6 @@
       "additionalProperties": false,
       "properties": {
         "chart": {
-          "default": null,
-          "title": "",
-          "type": "object",
-          "properties": {
-            "chart_type": {
-              "type": "string",
-              "title": "Chart Type",
-              "default": "bar",
-              "description": "Render the trend as bars or lines.",
-              "oneOf": [
-                {
-                  "const": "bar",
-                  "title": "Bar"
-                },
-                {
-                  "const": "line",
-                  "title": "Line"
-                }
-              ]
-            }
-          },
           "allOf": [
             {
               "if": {
@@ -534,31 +558,52 @@
                 }
               }
             }
-          ]
+          ],
+          "default": null,
+          "properties": {
+            "chart_type": {
+              "type": "string",
+              "title": "Chart Type",
+              "default": "bar",
+              "description": "Render the trend as bars or lines.",
+              "oneOf": [
+                {
+                  "const": "bar",
+                  "title": "Bar"
+                },
+                {
+                  "const": "line",
+                  "title": "Line"
+                }
+              ]
+            }
+          },
+          "title": "",
+          "type": "object"
         },
         "palette": {
           "anyOf": [
             {
-              "type": "string",
-              "title": "Color Map"
+              "title": "Color Map",
+              "type": "string"
             },
             {
               "items": {
                 "type": "string"
               },
-              "type": "array",
-              "title": "Custom Colors"
+              "title": "Custom Colors",
+              "type": "array"
             }
           ],
           "default": "tab20b",
-          "title": "Color Palette",
-          "description": "Series colors: a named color map, or your own colors (e.g. #123456) cycled in series order."
+          "description": "Series colors: a named color map, or your own colors (e.g. #123456) cycled in series order.",
+          "title": "Color Palette"
         },
         "y_axis_title": {
           "default": "",
+          "description": "Optional label for the value axis. Leave empty for no label.",
           "title": "Y-Axis Title",
-          "type": "string",
-          "description": "Optional label for the value axis. Leave empty for no label."
+          "type": "string"
         }
       },
       "type": "object",
@@ -779,6 +824,33 @@
       "title": "Category",
       "type": "object"
     },
+    "ActiveDurationMetric": {
+      "properties": {
+        "metric": {
+          "const": "active_duration",
+          "default": "active_duration",
+          "title": "Metric",
+          "type": "string"
+        },
+        "unit": {
+          "default": "h",
+          "oneOf": [
+            {
+              "const": "h",
+              "title": "Hours (h)"
+            },
+            {
+              "const": "d",
+              "title": "Days (d)"
+            }
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "title": "Active Duration",
+      "type": "object"
+    },
     "CustomMetric": {
       "allOf": [
         {
@@ -925,9 +997,6 @@
         "metric": {
           "const": "custom",
           "default": "custom",
-          "enum": [
-            "custom"
-          ],
           "title": "Metric",
           "type": "string"
         }
@@ -940,14 +1009,38 @@
       "title": "Custom",
       "type": "object"
     },
+    "ElapsedDurationMetric": {
+      "properties": {
+        "metric": {
+          "const": "elapsed_duration",
+          "default": "elapsed_duration",
+          "title": "Metric",
+          "type": "string"
+        },
+        "unit": {
+          "default": "h",
+          "oneOf": [
+            {
+              "const": "h",
+              "title": "Hours (h)"
+            },
+            {
+              "const": "d",
+              "title": "Days (d)"
+            }
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "title": "Elapsed Duration",
+      "type": "object"
+    },
     "EncountersPerDistanceMetric": {
       "properties": {
         "metric": {
           "const": "encounters_per_distance",
           "default": "encounters_per_distance",
-          "enum": [
-            "encounters_per_distance"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -981,9 +1074,6 @@
         "metric": {
           "const": "encounters_per_duration",
           "default": "encounters_per_duration",
-          "enum": [
-            "encounters_per_duration"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1018,9 +1108,6 @@
         "metric": {
           "const": "encounters_per_patrol_day",
           "default": "encounters_per_patrol_day",
-          "enum": [
-            "encounters_per_patrol_day"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1039,9 +1126,6 @@
         "metric": {
           "const": "encounters_per_patrol",
           "default": "encounters_per_patrol",
-          "enum": [
-            "encounters_per_patrol"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1055,15 +1139,36 @@
       "title": "Encounters per Patrol",
       "type": "object"
     },
+    "LegCountMetric": {
+      "properties": {
+        "metric": {
+          "const": "leg_count",
+          "default": "leg_count",
+          "title": "Metric",
+          "type": "string"
+        }
+      },
+      "title": "Leg Count",
+      "type": "object"
+    },
+    "MemberDaysMetric": {
+      "properties": {
+        "metric": {
+          "const": "member_days",
+          "default": "member_days",
+          "title": "Metric",
+          "type": "string"
+        }
+      },
+      "title": "Member-days",
+      "type": "object"
+    },
     "MergedAreaCoveredMetric": {
       "description": "Area covered with overlaps counted once \u2014 the distinct ground footprint.",
       "properties": {
         "metric": {
           "const": "area_covered_merged",
           "default": "area_covered_merged",
-          "enum": [
-            "area_covered_merged"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1082,9 +1187,6 @@
         "metric": {
           "const": "patrol_count",
           "default": "patrol_count",
-          "enum": [
-            "patrol_count"
-          ],
           "title": "Metric",
           "type": "string"
         }
@@ -1097,9 +1199,6 @@
         "metric": {
           "const": "patrol_days",
           "default": "patrol_days",
-          "enum": [
-            "patrol_days"
-          ],
           "title": "Metric",
           "type": "string"
         }
@@ -1112,9 +1211,6 @@
         "metric": {
           "const": "total_distance",
           "default": "total_distance",
-          "enum": [
-            "total_distance"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1142,9 +1238,6 @@
         "metric": {
           "const": "total_duration",
           "default": "total_duration",
-          "enum": [
-            "total_duration"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1172,9 +1265,6 @@
         "metric": {
           "const": "total_encounter",
           "default": "total_encounter",
-          "enum": [
-            "total_encounter"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1193,9 +1283,6 @@
         "metric": {
           "const": "total_events",
           "default": "total_events",
-          "enum": [
-            "total_events"
-          ],
           "title": "Metric",
           "type": "string"
         }
@@ -1209,9 +1296,6 @@
         "metric": {
           "const": "area_covered_unmerged",
           "default": "area_covered_unmerged",
-          "enum": [
-            "area_covered_unmerged"
-          ],
           "title": "Metric",
           "type": "string"
         },
@@ -1244,7 +1328,8 @@
       "ui:order": [
         "patrol_types",
         "event_types",
-        "status"
+        "status",
+        "event_states"
       ]
     },
     "patrol_filters": {
