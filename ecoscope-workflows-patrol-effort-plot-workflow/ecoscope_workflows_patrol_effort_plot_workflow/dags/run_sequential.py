@@ -8,9 +8,6 @@ from ecoscope.platform.tasks.config import (
     get_chart_mode_category_column as get_chart_mode_category_column,
 )
 from ecoscope.platform.tasks.config import (
-    get_chart_mode_category_groupers as get_chart_mode_category_groupers,
-)
-from ecoscope.platform.tasks.config import (
     get_chart_mode_spatial_groupers as get_chart_mode_spatial_groupers,
 )
 from ecoscope.platform.tasks.config import (
@@ -41,20 +38,10 @@ from ecoscope.platform.tasks.filter import set_time_range as set_time_range
 from ecoscope.platform.tasks.groupby import set_groupers as set_groupers
 from ecoscope.platform.tasks.groupby import split_groups as split_groups
 from ecoscope.platform.tasks.io import (
-    add_patrol_roster_names as add_patrol_roster_names,
-)
-from ecoscope.platform.tasks.io import add_patrol_team_names as add_patrol_team_names
-from ecoscope.platform.tasks.io import (
-    add_patrol_type_display_names as add_patrol_type_display_names,
-)
-from ecoscope.platform.tasks.io import (
     get_event_type_display_names_from_events as get_event_type_display_names_from_events,
 )
 from ecoscope.platform.tasks.io import (
     get_patrol_observations_from_patrols_df_and_combined_params as get_patrol_observations_from_patrols_df_and_combined_params,
-)
-from ecoscope.platform.tasks.io import (
-    get_patrol_segments_from_patrols_df_and_combined_params as get_patrol_segments_from_patrols_df_and_combined_params,
 )
 from ecoscope.platform.tasks.io import (
     get_patrols_from_combined_params as get_patrols_from_combined_params,
@@ -85,12 +72,6 @@ from ecoscope.platform.tasks.skip import (
 from ecoscope.platform.tasks.skip import any_is_empty_df as any_is_empty_df
 from ecoscope.platform.tasks.skip import never as never
 from ecoscope.platform.tasks.transformation import (
-    add_leg_names_to_tracks as add_leg_names_to_tracks,
-)
-from ecoscope.platform.tasks.transformation import (
-    add_patrol_type_display_from_legs as add_patrol_type_display_from_legs,
-)
-from ecoscope.platform.tasks.transformation import (
     add_spatial_index as add_spatial_index,
 )
 from ecoscope.platform.tasks.transformation import (
@@ -98,9 +79,6 @@ from ecoscope.platform.tasks.transformation import (
 )
 from ecoscope.platform.tasks.transformation import (
     apply_reloc_coord_filter as apply_reloc_coord_filter,
-)
-from ecoscope.platform.tasks.transformation import (
-    apportion_legs_by_spatial_index as apportion_legs_by_spatial_index,
 )
 from ecoscope.platform.tasks.transformation import (
     concat_dataframes as concat_dataframes,
@@ -116,9 +94,6 @@ from ecoscope.platform.tasks.transformation import (
 )
 from ecoscope.platform.tasks.transformation import (
     drop_column_prefix as drop_column_prefix,
-)
-from ecoscope.platform.tasks.transformation import (
-    explode_for_groupers as explode_for_groupers,
 )
 from ecoscope.platform.tasks.transformation import (
     extract_spatial_grouper_feature_group_names as extract_spatial_grouper_feature_group_names,
@@ -309,112 +284,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             events_gdf=patrol_events,
             append_category_names="duplicates",
             **(params.get("event_display_names") or {}),
-        )
-        .call()
-    )
-
-    patrol_legs = (
-        task(get_patrol_segments_from_patrols_df_and_combined_params)
-        .validate()
-        .set_task_instance_id("patrol_legs")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            patrols_df=prefetch_patrols,
-            combined_params=er_params,
-            **(params.get("patrol_legs") or {}),
-        )
-        .call()
-    )
-
-    legs_team_names = (
-        task(add_patrol_team_names)
-        .validate()
-        .set_task_instance_id("legs_team_names")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=patrol_legs,
-            client=er_client_name,
-            **(params.get("legs_team_names") or {}),
-        )
-        .call()
-    )
-
-    legs_roster_names = (
-        task(add_patrol_roster_names)
-        .validate()
-        .set_task_instance_id("legs_roster_names")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=legs_team_names,
-            client=er_client_name,
-            **(params.get("legs_roster_names") or {}),
-        )
-        .call()
-    )
-
-    legs_type_display = (
-        task(add_patrol_type_display_names)
-        .validate()
-        .set_task_instance_id("legs_type_display")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=legs_roster_names,
-            client=er_client_name,
-            **(params.get("legs_type_display") or {}),
-        )
-        .call()
-    )
-
-    convert_legs_tz = (
-        task(convert_values_to_timezone)
-        .validate()
-        .set_task_instance_id("convert_legs_tz")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=legs_type_display,
-            timezone=get_timezone,
-            columns=["segment_start", "segment_end"],
-            **(params.get("convert_legs_tz") or {}),
         )
         .call()
     )
@@ -662,25 +531,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    breakdown_category_groupers = (
-        task(get_chart_mode_category_groupers)
-        .validate()
-        .set_task_instance_id("breakdown_category_groupers")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            config=trend_config, **(params.get("breakdown_category_groupers") or {})
-        )
-        .call()
-    )
-
     breakdown_group_ids = (
         task(extract_spatial_grouper_feature_group_names)
         .validate()
@@ -869,50 +719,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             retain_columns=[],
             rename_columns={"patrol_type__value": "patrol_type"},
             raise_if_not_found=False,
-            duplicate_strategy="suffix",
             **(params.get("traj_rename_cols") or {}),
-        )
-        .call()
-    )
-
-    traj_leg_names = (
-        task(add_leg_names_to_tracks)
-        .validate()
-        .set_task_instance_id("traj_leg_names")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=traj_rename_cols,
-            legs=convert_legs_tz,
-            **(params.get("traj_leg_names") or {}),
-        )
-        .call()
-    )
-
-    traj_type_display = (
-        task(add_patrol_type_display_from_legs)
-        .validate()
-        .set_task_instance_id("traj_type_display")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=traj_leg_names,
-            legs=convert_legs_tz,
-            **(params.get("traj_type_display") or {}),
         )
         .call()
     )
@@ -931,7 +738,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(
-            df=traj_type_display,
+            df=traj_rename_cols,
             datetime_column="segment_start",
             components=["date"],
             remove_source=False,
@@ -1026,7 +833,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             retain_columns=[],
             rename_columns={"segment_start": "trend_time"},
             raise_if_not_found=True,
-            duplicate_strategy="suffix",
             **(params.get("traj_rename_time") or {}),
         )
         .call()
@@ -1076,48 +882,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    events_leg_names = (
-        task(add_leg_names_to_tracks)
-        .validate()
-        .set_task_instance_id("events_leg_names")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=drop_prefix_events,
-            legs=convert_legs_tz,
-            **(params.get("events_leg_names") or {}),
-        )
-        .call()
-    )
-
-    events_type_display = (
-        task(add_patrol_type_display_from_legs)
-        .validate()
-        .set_task_instance_id("events_type_display")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=events_leg_names,
-            legs=convert_legs_tz,
-            **(params.get("events_type_display") or {}),
-        )
-        .call()
-    )
-
     filter_patrol_events = (
         task(apply_reloc_coord_filter)
         .validate()
@@ -1132,7 +896,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(
-            df=events_type_display,
+            df=drop_prefix_events,
             bounding_box=bounding_box,
             filter_point_coords=filter_point_coords,
             roi_gdf=None,
@@ -1228,103 +992,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             retain_columns=[],
             rename_columns={"time": "trend_time"},
             raise_if_not_found=True,
-            duplicate_strategy="suffix",
             **(params.get("events_rename_time") or {}),
-        )
-        .call()
-    )
-
-    legs_temporal_index = (
-        task(add_temporal_index)
-        .validate()
-        .set_task_instance_id("legs_temporal_index")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=convert_legs_tz,
-            time_col="segment_start",
-            groupers=resolved_groupers,
-            cast_to_datetime=True,
-            format="mixed",
-            **(params.get("legs_temporal_index") or {}),
-        )
-        .call()
-    )
-
-    legs_spatial_index = (
-        task(apportion_legs_by_spatial_index)
-        .validate()
-        .set_task_instance_id("legs_spatial_index")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            legs=legs_temporal_index,
-            indexed_traj=traj_spatial_index,
-            groupers=resolved_groupers,
-            drop_unplaced=True,
-            **(params.get("legs_spatial_index") or {}),
-        )
-        .call()
-    )
-
-    legs_breakdown_spatial = (
-        task(apportion_legs_by_spatial_index)
-        .validate()
-        .set_task_instance_id("legs_breakdown_spatial")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            legs=legs_spatial_index,
-            indexed_traj=traj_breakdown_spatial,
-            groupers=resolved_breakdown_groupers,
-            drop_unplaced=True,
-            **(params.get("legs_breakdown_spatial") or {}),
-        )
-        .call()
-    )
-
-    legs_rename_time = (
-        task(map_columns)
-        .validate()
-        .set_task_instance_id("legs_rename_time")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=legs_breakdown_spatial,
-            drop_columns=["patrol_id"],
-            retain_columns=[],
-            rename_columns={"segment_start": "trend_time"},
-            raise_if_not_found=True,
-            duplicate_strategy="suffix",
-            **(params.get("legs_rename_time") or {}),
         )
         .call()
     )
@@ -1342,7 +1010,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(
-            dfs=[traj_rename_time, events_rename_time, legs_rename_time],
+            dfs=[traj_rename_time, events_rename_time],
             ensure_columns=[
                 "event_type",
                 "event_type_display",
@@ -1354,13 +1022,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
                 "patrol_type",
                 "patrol_serial_number",
                 "trend_time",
-                "leg_active_seconds",
-                "patrol_elapsed_seconds",
-                "leg_member_days",
-                "patrol_segment_id",
-                "patrol_team_name",
-                "patrol_member_names",
-                "patrol_asset_names",
             ],
             reset_index=False,
             **(params.get("combined_df") or {}),
@@ -1383,55 +1044,8 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         )
         .partial(
             df=combined_df,
-            columns=[
-                "patrol_serial_number",
-                "patrol_type",
-                "patrol_subject",
-                "patrol_team_name",
-            ],
+            columns=["patrol_serial_number", "patrol_type", "patrol_subject"],
             **(params.get("combined_to_string") or {}),
-        )
-        .call()
-    )
-
-    combined_exploded = (
-        task(explode_for_groupers)
-        .validate()
-        .set_task_instance_id("combined_exploded")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=combined_to_string,
-            groupers=resolved_groupers,
-            **(params.get("combined_exploded") or {}),
-        )
-        .call()
-    )
-
-    combined_exploded_category = (
-        task(explode_for_groupers)
-        .validate()
-        .set_task_instance_id("combined_exploded_category")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            df=combined_exploded,
-            groupers=breakdown_category_groupers,
-            **(params.get("combined_exploded_category") or {}),
         )
         .call()
     )
@@ -1450,7 +1064,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(
-            df=combined_exploded_category,
+            df=combined_to_string,
             groupers=resolved_groupers,
             **(params.get("split_combined") or {}),
         )

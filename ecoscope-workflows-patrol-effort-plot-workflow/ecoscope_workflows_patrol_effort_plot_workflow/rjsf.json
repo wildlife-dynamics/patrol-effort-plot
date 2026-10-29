@@ -107,58 +107,17 @@
                 "done"
               ],
               "items": {
-                "type": "string",
-                "oneOf": [
-                  {
-                    "const": "active",
-                    "title": "Active"
-                  },
-                  {
-                    "const": "overdue",
-                    "title": "Overdue"
-                  },
-                  {
-                    "const": "done",
-                    "title": "Done"
-                  },
-                  {
-                    "const": "cancelled",
-                    "title": "Cancelled"
-                  }
-                ]
+                "enum": [
+                  "active",
+                  "overdue",
+                  "done",
+                  "cancelled"
+                ],
+                "type": "string"
               },
               "title": "Patrol Status",
               "type": "array",
               "description": "Choose to analyze patrols with a certain status. If left empty, patrols of all status will be analyzed",
-              "uniqueItems": true,
-              "ecoscope:advanced": true
-            },
-            "event_states": {
-              "default": null,
-              "items": {
-                "type": "string",
-                "oneOf": [
-                  {
-                    "const": "new",
-                    "title": "New"
-                  },
-                  {
-                    "const": "active",
-                    "title": "Active"
-                  },
-                  {
-                    "const": "resolved",
-                    "title": "Resolved"
-                  },
-                  {
-                    "const": "review",
-                    "title": "Review"
-                  }
-                ]
-              },
-              "title": "Event State",
-              "type": "array",
-              "description": "Choose to analyze events with a certain state. If left empty, events of all states will be analyzed",
               "uniqueItems": true,
               "ecoscope:advanced": true
             }
@@ -305,17 +264,13 @@
               "items": {
                 "discriminator": {
                   "mapping": {
-                    "active_duration": "#/$defs/ActiveDurationMetric",
                     "area_covered_merged": "#/$defs/MergedAreaCoveredMetric",
                     "area_covered_unmerged": "#/$defs/UnmergedAreaCoveredMetric",
                     "custom": "#/$defs/CustomMetric",
-                    "elapsed_duration": "#/$defs/ElapsedDurationMetric",
                     "encounters_per_distance": "#/$defs/EncountersPerDistanceMetric",
                     "encounters_per_duration": "#/$defs/EncountersPerDurationMetric",
                     "encounters_per_patrol": "#/$defs/EncountersPerPatrolMetric",
                     "encounters_per_patrol_day": "#/$defs/EncountersPerPatrolDayMetric",
-                    "leg_count": "#/$defs/LegCountMetric",
-                    "member_days": "#/$defs/MemberDaysMetric",
                     "patrol_count": "#/$defs/PatrolCountMetric",
                     "patrol_days": "#/$defs/PatrolDaysMetric",
                     "total_distance": "#/$defs/TotalDistanceMetric",
@@ -327,9 +282,6 @@
                 },
                 "oneOf": [
                   {
-                    "$ref": "#/$defs/ActiveDurationMetric"
-                  },
-                  {
                     "$ref": "#/$defs/MergedAreaCoveredMetric"
                   },
                   {
@@ -337,9 +289,6 @@
                   },
                   {
                     "$ref": "#/$defs/CustomMetric"
-                  },
-                  {
-                    "$ref": "#/$defs/ElapsedDurationMetric"
                   },
                   {
                     "$ref": "#/$defs/EncountersPerDistanceMetric"
@@ -352,12 +301,6 @@
                   },
                   {
                     "$ref": "#/$defs/EncountersPerPatrolDayMetric"
-                  },
-                  {
-                    "$ref": "#/$defs/LegCountMetric"
-                  },
-                  {
-                    "$ref": "#/$defs/MemberDaysMetric"
                   },
                   {
                     "$ref": "#/$defs/PatrolCountMetric"
@@ -472,18 +415,6 @@
                           {
                             "const": "patrol_serial_number",
                             "title": "Patrol Serial Number"
-                          },
-                          {
-                            "const": "patrol_team_name",
-                            "title": "Team"
-                          },
-                          {
-                            "const": "patrol_member_names",
-                            "title": "Member"
-                          },
-                          {
-                            "const": "patrol_asset_names",
-                            "title": "Asset"
                           }
                         ]
                       }
@@ -992,52 +923,10 @@
             {
               "const": "patrol_subject",
               "title": "Patrol Subject"
-            },
-            {
-              "const": "patrol_team_name",
-              "title": "Team"
-            },
-            {
-              "const": "patrol_member_names",
-              "title": "Member"
-            },
-            {
-              "const": "patrol_asset_names",
-              "title": "Asset"
             }
           ]
         }
       }
-    },
-    "ActiveDurationMetric": {
-      "properties": {
-        "metric": {
-          "const": "active_duration",
-          "default": "active_duration",
-          "enum": [
-            "active_duration"
-          ],
-          "title": "Metric",
-          "type": "string"
-        },
-        "unit": {
-          "default": "h",
-          "oneOf": [
-            {
-              "const": "h",
-              "title": "Hours (h)"
-            },
-            {
-              "const": "d",
-              "title": "Days (d)"
-            }
-          ],
-          "title": "Unit",
-          "type": "string"
-        }
-      },
-      "title": "Active Duration",
-      "type": "object"
     },
     "CustomMetric": {
       "allOf": [
@@ -1200,36 +1089,6 @@
       "title": "Custom",
       "type": "object"
     },
-    "ElapsedDurationMetric": {
-      "properties": {
-        "metric": {
-          "const": "elapsed_duration",
-          "default": "elapsed_duration",
-          "enum": [
-            "elapsed_duration"
-          ],
-          "title": "Metric",
-          "type": "string"
-        },
-        "unit": {
-          "default": "h",
-          "oneOf": [
-            {
-              "const": "h",
-              "title": "Hours (h)"
-            },
-            {
-              "const": "d",
-              "title": "Days (d)"
-            }
-          ],
-          "title": "Unit",
-          "type": "string"
-        }
-      },
-      "title": "Elapsed Duration",
-      "type": "object"
-    },
     "EncountersPerDistanceMetric": {
       "properties": {
         "metric": {
@@ -1343,36 +1202,6 @@
         }
       },
       "title": "Encounters per Patrol",
-      "type": "object"
-    },
-    "LegCountMetric": {
-      "properties": {
-        "metric": {
-          "const": "leg_count",
-          "default": "leg_count",
-          "enum": [
-            "leg_count"
-          ],
-          "title": "Metric",
-          "type": "string"
-        }
-      },
-      "title": "Leg Count",
-      "type": "object"
-    },
-    "MemberDaysMetric": {
-      "properties": {
-        "metric": {
-          "const": "member_days",
-          "default": "member_days",
-          "enum": [
-            "member_days"
-          ],
-          "title": "Metric",
-          "type": "string"
-        }
-      },
-      "title": "Member-days",
       "type": "object"
     },
     "MergedAreaCoveredMetric": {
@@ -1565,8 +1394,7 @@
         "ui:order": [
           "patrol_types",
           "event_types",
-          "status",
-          "event_states"
+          "status"
         ],
         "patrol_types": {
           "items": {
@@ -1606,38 +1434,6 @@
         "metrics": {
           "items": {
             "oneOf": [
-              {
-                "ui:options": {
-                  "label": false
-                },
-                "metric": {
-                  "ui:widget": "hidden"
-                }
-              },
-              {
-                "ui:options": {
-                  "label": false
-                },
-                "metric": {
-                  "ui:widget": "hidden"
-                }
-              },
-              {
-                "ui:options": {
-                  "label": false
-                },
-                "metric": {
-                  "ui:widget": "hidden"
-                }
-              },
-              {
-                "ui:options": {
-                  "label": false
-                },
-                "metric": {
-                  "ui:widget": "hidden"
-                }
-              },
               {
                 "ui:options": {
                   "label": false
