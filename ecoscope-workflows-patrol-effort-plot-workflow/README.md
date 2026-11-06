@@ -5,15 +5,15 @@
 
 ```yaml
 # fingerprint:
-artifacts_sha256_basic: 11a06272c0edd3bae20241ea700dc1ce1b791bcd1c38d1336969948f17a7ac89
-artifacts_sha256_strict: fbc0c953bccb713f847a487246ab9acff0c6e4d97a9e64ac69aa146f103c5979
+artifacts_sha256_basic: 784d2be4201217daaac5d1cc11eb90d41f55c9f6e8d26f7806a00f61c52d2dfb
+artifacts_sha256_strict: 6228e8ba6dcc3e50c78540b04e4e43ea444a42f2e5e45d451c4100a0718635e3
 installed_requirements:
 - channel: conda-forge
   name: python
   version: {version: ==3.12.16}
 - channel: https://repo.prefix.dev/ecoscope-workflows/
   name: ecoscope-platform
-  version: {version: ==2.27.1}
+  version: {version: ==2.30.1}
 - channel: https://repo.prefix.dev/ecoscope-workflows/
   name: lonboard
   version: {version: ==0.0.8}
@@ -21,7 +21,7 @@ installed_requirements:
   name: pydeck
   version: {version: ==0.9.2}
 params_sha256: 36dbb3fb9df2887bb646b099906f253b233547e95ba488dddfb1be5bbc99ad6a
-spec_sha256: 0d6d2e2f9cce919aff313f4737fb08a1fa380c73aac406d790bcd6ec053e0000
+spec_sha256: d905ea457a843a7780bc7a8f20d3c7a3e4696c4a9ad7d737084dec5e94905159
 
 ```
 
